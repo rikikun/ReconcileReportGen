@@ -194,7 +194,7 @@ public class MainFrame extends javax.swing.JFrame {
                 java.lang.Integer.class, java.lang.String.class, java.lang.Boolean.class, java.lang.Boolean.class
             };
             boolean[] canEdit = new boolean [] {
-                true, true, false, true
+                false, false, false, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -340,6 +340,10 @@ public class MainFrame extends javax.swing.JFrame {
                 }
             }
         }
+    }
+    
+    private void checkSqlforFile(String fileName){
+        
     }
 
     /**
