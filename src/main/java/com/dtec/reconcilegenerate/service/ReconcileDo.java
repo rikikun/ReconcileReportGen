@@ -12,7 +12,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ReconcileDo {
 
-    public void doReconcile(String templatePath, String fileName, String sql, Integer numChk)
+    public void doReconcile(String templatePath, String fileName, String sql)
             throws SQLException {
         Connection connection = DbConnect.connectDatabase();
         IoService excelService = new IoService();

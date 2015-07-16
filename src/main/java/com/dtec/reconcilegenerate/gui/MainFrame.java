@@ -5,19 +5,17 @@
  */
 package com.dtec.reconcilegenerate.gui;
 
-import com.dtec.reconcilegenerate.service.DbConnect;
+import com.dtec.reconcilegenerate.service.IoService;
+import com.dtec.reconcilegenerate.service.ReconcileDo;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileFilter;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import javax.swing.ImageIcon;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
@@ -26,6 +24,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class MainFrame extends javax.swing.JFrame {
 
     public static Integer tableRow;
+    public IoService ioService = new IoService();
+    public ReconcileDo reconcileDo = new ReconcileDo();
 
     /**
      * Creates new form MainFrame
@@ -278,6 +278,27 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        Boolean sqlStatus = false;
+        Boolean selected = false;
+        String fileName = "";
+        String parentPath = templatePath.getText() + File.separator;
+        String sqlQuery = "";
+        for (int i = 0; i < tableRow; i++) {
+            try {
+                sqlStatus = (Boolean) jTable2.getModel().getValueAt(i, 2);
+                selected = (Boolean) jTable2.getModel().getValueAt(i, 3);
+                fileName = (String) jTable2.getModel().getValueAt(i, 1);
+                if ((sqlStatus != null && sqlStatus == true) && (selected != null && selected == true)) {
+                    sqlQuery = ioService.readSql(parentPath + "sql" + File.separator + fileName.split("\\.")[0] + ".sql");
+                    reconcileDo.doReconcile(parentPath + fileName, fileName, sqlQuery);
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        System.out.println("Finsih");
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void templatePathActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_templatePathActionPerformed
@@ -327,13 +348,19 @@ public class MainFrame extends javax.swing.JFrame {
             int count = 0;
             int row = 0;
             String name = "";
+            String pathSql = "";
             for (File fi : directory.listFiles()) {
                 if (fi.isFile()) {
                     try {
                         name = fi.getName();
+                        pathSql = fi.getParentFile() + File.separator + "sql" + File.separator + name.split("\\.")[0] + ".sql";
                         jTable2.getModel().setValueAt(++count, row, 0);
-                        jTable2.getModel().setValueAt(name, row++, 1);
+                        jTable2.getModel().setValueAt(name, row, 1);
+                        if (ioService.checkFileExist(pathSql)) {
+                            jTable2.getModel().setValueAt(true, row, 2);
+                        }
                         tableRow++;
+                        row++;
                     } catch (Exception e) {
 
                     }
@@ -341,9 +368,9 @@ public class MainFrame extends javax.swing.JFrame {
             }
         }
     }
-    
-    private void checkSqlforFile(String fileName){
-        
+
+    private void checkSqlforFile(String fileName) {
+
     }
 
     /**
