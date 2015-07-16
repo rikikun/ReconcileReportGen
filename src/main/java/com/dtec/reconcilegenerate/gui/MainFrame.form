@@ -140,7 +140,7 @@
                   <Table columnCount="4" rowCount="99">
                     <Column editable="true" title="No." type="java.lang.Integer"/>
                     <Column editable="true" title="Name" type="java.lang.String"/>
-                    <Column editable="true" title="Sql status" type="java.lang.Boolean"/>
+                    <Column editable="false" title="Sql status" type="java.lang.Boolean"/>
                     <Column editable="true" title="Choose" type="java.lang.Boolean"/>
                   </Table>
                 </Property>

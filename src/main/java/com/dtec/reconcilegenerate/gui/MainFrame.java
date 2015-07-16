@@ -26,6 +26,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class MainFrame extends javax.swing.JFrame {
 
     public static Integer tableRow;
+
     /**
      * Creates new form MainFrame
      */
@@ -192,9 +193,16 @@ public class MainFrame extends javax.swing.JFrame {
             Class[] types = new Class [] {
                 java.lang.Integer.class, java.lang.String.class, java.lang.Boolean.class, java.lang.Boolean.class
             };
+            boolean[] canEdit = new boolean [] {
+                true, true, false, true
+            };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
         });
         jScrollPane2.setViewportView(jTable2);
@@ -275,60 +283,65 @@ public class MainFrame extends javax.swing.JFrame {
     private void templatePathActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_templatePathActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_templatePathActionPerformed
-    
+
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
         final JFileChooser fc = new JFileChooser();
-                                        fc.setFileFilter(new FileNameExtensionFilter("template report reconcile file", "xlsx"));
-				fc.setCurrentDirectory(new File("."));
-                                fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-				fc.addActionListener(new ActionListener() {
+//        fc.setFileFilter(new FileNameExtensionFilter("template report reconcile file", "xlsx"));
+        fc.setCurrentDirectory(new File("."));
+        fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        fc.addActionListener(new ActionListener() {
 
-					@Override
-					public void actionPerformed(ActionEvent arg0) {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
 //						jPathExcel.setText(fc.getSelectedFile()
 //								.getAbsolutePath());
-                                            templatePath.setText(fc.getSelectedFile().getAbsolutePath());
-                                            readFilesFromDirectory(fc.getSelectedFile().getAbsolutePath());
-					}
-				});
-				fc.showOpenDialog(this);
+                templatePath.setText(fc.getSelectedFile().getAbsolutePath());
+                readFilesFromDirectory(fc.getSelectedFile().getAbsolutePath());
+            }
+        });
+        fc.showOpenDialog(this);
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jCheckBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox3ActionPerformed
         // TODO add your handling code here:
-        JCheckBox jCheck=(JCheckBox) evt.getSource();
-        if(jCheck.isSelected()){
-            for(int i=0;i<tableRow;i++){
-                jTable2.setValueAt(false, i, 2);
+        JCheckBox jCheck = (JCheckBox) evt.getSource();
+        if (tableRow != null) {
+            if (jCheck.isSelected()) {
+                for (int i = 0; i < tableRow; i++) {
+                    jTable2.setValueAt(true, i, 3);
+                }
+            } else {
+                for (int i = 0; i < tableRow; i++) {
+                    jTable2.setValueAt(false, i, 3);
+                }
             }
-        }else{
-            
         }
+
     }//GEN-LAST:event_jCheckBox3ActionPerformed
 
-    private void readFilesFromDirectory(String path){
-        File directory=new File(path);
-        tableRow=0;
-        if(directory.isDirectory()){
-            int count=0;
-            int row=0;
-            String name="";
-            for(File fi:directory.listFiles()){
-                if(fi.isFile()){
+    private void readFilesFromDirectory(String path) {
+        File directory = new File(path);
+        tableRow = 0;
+        if (directory.isDirectory()) {
+            int count = 0;
+            int row = 0;
+            String name = "";
+            for (File fi : directory.listFiles()) {
+                if (fi.isFile()) {
                     try {
-                        name = fi.getName().split(".")[0];
+                        name = fi.getName();
                         jTable2.getModel().setValueAt(++count, row, 0);
                         jTable2.getModel().setValueAt(name, row++, 1);
                         tableRow++;
-                    }catch(Exception e){
-                            
+                    } catch (Exception e) {
+
                     }
                 }
             }
         }
     }
-    
+
     /**
      * @param args the command line arguments
      */
